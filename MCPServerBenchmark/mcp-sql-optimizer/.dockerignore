@@ -1,8 +1,0 @@
-venv/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.git/
-.env
-claude_desktop_config.json
