@@ -10,4 +10,5 @@ Thumbs.db
 .env
 .venv/
 .venv
+venv/
 results/

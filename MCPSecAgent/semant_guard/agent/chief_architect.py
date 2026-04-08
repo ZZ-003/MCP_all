@@ -5,7 +5,6 @@ from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain.agents.structured_output import ToolStrategy
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 from langchain.messages import HumanMessage,AIMessage
 
 from semant_guard.context.memory import LongTermMemory
@@ -13,8 +12,8 @@ from semant_guard.prompts.chief_architect import CHIEF_ARCHITECT_PROMPT
 from semant_guard.prompts import TASK_INSTRUCTION, ACTION_LIMIT
 from utils.structured_output import get_structured_output_middleware
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 
 class ChiefArchitect:

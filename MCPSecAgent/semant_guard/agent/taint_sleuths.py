@@ -15,8 +15,8 @@ from semant_guard.context.utils import longterm_memory_to_markdown, shortterm_me
 from utils.utils import setup_log_dir
 from utils.structured_output import get_structured_output_middleware
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 class TaintSleuths:
     def __init__(self, project_dir: str, ltm: LongTermMemory):

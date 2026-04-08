@@ -5,7 +5,6 @@ from pathlib import Path
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 from langchain.messages import HumanMessage,AIMessage
 
 from semant_guard.agent.chief_architect import ChiefArchitect
@@ -18,8 +17,8 @@ from utils.output_model import MaliResponse
 from utils.structured_output import get_structured_output_middleware
 from utils.utils import setup_log_dir
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 async def agent_with_ltm_scan(project_dir: str) -> dict:
     """

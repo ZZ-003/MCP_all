@@ -9,8 +9,8 @@ from utils.output_model import VulnResponse, AllResponse, MaliResponse
 from utils.prompts import CODE_SCAN_PROMPT , All_CODE_SCAN_PROMPT , MALICIOUS_TOOL_PROMPT
 from utils.utils import setup_log_dir
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 async def llm_only_scan(project_dir: str) -> dict:
     project_path = Path(project_dir)

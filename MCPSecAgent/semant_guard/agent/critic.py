@@ -1,7 +1,6 @@
 from time import time
 from os import getenv
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain.messages import HumanMessage,AIMessage
@@ -15,8 +14,8 @@ from utils.structured_output import get_structured_output_middleware
 from utils.output_model import VulnResponse
 from utils.output_model import MaliResponse
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 class Critic():
     def __init__(self, project_dir: str, ltm: LongTermMemory, all_tool_stm: dict[str, ShortTermMemory]):

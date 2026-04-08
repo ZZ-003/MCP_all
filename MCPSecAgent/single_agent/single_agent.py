@@ -3,7 +3,6 @@ from time import time
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 
 from utils.prompts import CODE_SCAN_PROMPT , All_CODE_SCAN_PROMPT , MALICIOUS_TOOL_PROMPT
 from utils.output_model import VulnResponse, AllResponse
@@ -11,8 +10,8 @@ from utils.output_model import MaliResponse
 from utils.structured_output import get_structured_output_middleware
 from utils.utils import setup_log_dir
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 async def single_agent_scan(project_dir: str) -> dict:
     llm = ChatOpenAI(

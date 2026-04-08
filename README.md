@@ -3,15 +3,17 @@
 
 ### 1. 环境准备
 
-推荐使用 Python 3.10+。建议在虚拟环境中安装依赖，以避免包冲突：
+推荐使用 Python 3.12。建议使用 `uv` 工具快速创建并管理环境：
 
 ```bash
-# 创建并激活虚拟环境
-python3 -m venv venv
+# 使用 uv 创建 Python 3.12 虚拟环境
+uv venv --python 3.12 venv
+
+# 激活虚拟环境
 source venv/bin/activate
 
 # 安装核心依赖
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ### 2. API 密钥配置
@@ -24,9 +26,14 @@ pip install -r requirements.txt
 我们提供了一个总控脚本 `run_workflow.sh`，它可以自动完成从源码下载到安全分析的所有步骤：
 
 ```bash
-# 赋予执行权限并运行
+# 赋予权限（如果尚未赋予）
 chmod +x run_workflow.sh
+
+# 方式 1: 使用默认参数 (bench_dir=/tmp/mcp-benchmark, max_concurrent=3)
 ./run_workflow.sh
+
+# 方式 2: 指定并发数为 5
+./run_workflow.sh /tmp/mcp-benchmark 5
 ```
 
 ---
