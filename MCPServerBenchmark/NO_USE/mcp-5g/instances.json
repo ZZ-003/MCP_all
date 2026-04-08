@@ -1,0 +1,25 @@
+{
+  "nfInstances": [
+    {
+      "nfInstanceId": "nrf-01",
+      "nfType": "NRF",
+      "namespace": "ocnrf",
+      "pods": [
+        "ocnrf-egressgateway-6f96fc86b4-lrdh9"
+      ],
+
+      "services": [
+        {
+          "name": "nrf-service",
+          "clusterIP": "10.96.120.11",
+          "ports": [
+            {
+              "port": 8080,
+              "protocol": "TCP"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+services:
+  internal-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - custom_network
+    environment:
+      - INTERNAL_SERVICE_FLAG=${INTERNAL_SERVICE_FLAG}
+
+networks:
+  custom_network:
+    external: true
+    name: ${NETWORK_NAME:-mcp-shared-network}

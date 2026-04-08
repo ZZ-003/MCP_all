@@ -1,0 +1,6 @@
+mcp>=1.26.0
+kubernetes>=29.0.0
+# Explicit runtime deps for Streamable HTTP transport
+starlette>=0.37.2
+sse-starlette>=2.0.0
+uvicorn>=0.30.0

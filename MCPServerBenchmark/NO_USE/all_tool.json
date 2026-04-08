@@ -1,0 +1,53 @@
+{
+    "mcp-5g": [
+        "k8s_get_pods",
+        "k8s_get_deployments",
+        "k8s_get_services",
+        "k8s_get_pod_logs",
+        "k8s_describe_pod",
+        "k8s_get_configmaps",
+        "k8s_get_nodes",
+        "k8s_get_events",
+        "fiveg_core_topology",
+        "fiveg_nf_status",
+        "fiveg_slice_info",
+        "fiveg_health_check"
+    ],
+    "mcp-appflowy": [
+        "appflowy_login",
+        "appflowy_refresh_token",
+        "appflowy_list_workspaces",
+        "appflowy_list_databases",
+        "appflowy_get_database_fields",
+        "appflowy_list_rows",
+        "appflowy_get_row_details",
+        "appflowy_create_row",
+        "appflowy_upsert_row",
+        "hello",
+        "get_tasks",
+        "add_task"
+    ],
+    "mcp-filesystem-server": [
+        "read_file",
+        "list_directory",
+        "write_file",
+        "create_directory",
+        "delete_file",
+        "delete_directory",
+        "move_path",
+        "get_file_info"
+    ],
+    "mcp-MariaDB": [
+        "list_databases",
+        "list_tables",
+        "get_table_schema",
+        "get_table_schema_with_relations",
+        "execute_sql",
+        "create_database",
+        "create_vector_store",
+        "list_vector_stores",
+        "delete_vector_store",
+        "insert_docs_vector_store",
+        "search_vector_store"
+    ]
+}

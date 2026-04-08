@@ -1,0 +1,8 @@
+deepagents
+claude-agent-sdk
+python-dotenv
+mcp
+langchain-openai
+langchain-anthropic
+httpx[socks]
+langsmith
