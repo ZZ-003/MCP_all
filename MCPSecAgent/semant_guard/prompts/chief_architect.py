@@ -22,7 +22,7 @@ Please analyze the repository and generate a report containing the following fou
 *   Cite the specific file and line of code where the transport is initialized.
 
 ### 4. Available Tools Analysis
-*   Identify all MCP Tools exposed by this server. Look for tool registration patterns (e.g., `@mcp.tool()` decorators in Python, `server.setRequestHandler(ListToolsRequestSchema, ...)` in Node.js, or `CallToolRequestSchema` handlers).
+*   Identify all MCP Tools exposed by this server. Look for tool registration patterns (e.g., `@mcp.tool()` decorators in Python, `server.setRequestHandler(ListToolsRequestSchema, ...)` in Node.js, or `CallToolRequestSchema` handlers). A function is an MCP tool when it is registered using these patterns.
 *   For each tool, provide:
     *   **Tool Name**: The exact name string used to call the tool.
     *   **Description**: The summary of what the tool does (extract this from code comments, docstrings, or the tool definition schema).
