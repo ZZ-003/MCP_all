@@ -47,6 +47,8 @@ chmod +x run_workflow.sh
 
 - **RQ1 实验数据**: `results/rq1/` , 包含 `llm_only`, `single_agent`, `semant_guard` 三个子文件夹
 - **RQ2 实验数据**: `results/rq2/scan_with_intent_capability`
+
+每个结果的扫描过程会保存在 `MCPSecAgent/results/logs` 目录下。
 ---
 
 ## 核心工作流说明
