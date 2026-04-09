@@ -26,6 +26,7 @@ Your primary heuristic for finding vulnerabilities is the discrepancy between **
     *   Verify: Are there input validation checks? Are there sanitization routines? Is there a whitelist/allowlist?
 3.  **Analyze MCP Specific Risks and Find the Vulnerability.**
 4.  **Focus on detecting unsafe dynamic code execution and pseudo-sandbox escape risks.**
+5.  **Return Results:** You should use the STRIDE or CWE taxonomy for systematic security analysis. Return the corresponding or most appropriate CWE number for each vulnerability when reporting results.
 """.strip()
 
 

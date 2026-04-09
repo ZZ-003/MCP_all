@@ -13,3 +13,6 @@ Thumbs.db
 venv/
 results/
 mcp-*/
+*.json
+output_python/
+*_python/
