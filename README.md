@@ -16,14 +16,14 @@ source venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-准备 json 文件，在 http://8.130.215.70/all 下载文件，重命名为 `mcp_servers.json` 并放置在项目根目录。
+准备 json 文件，在 http://8.130.215.70/all 下载文件，重命名为 `mcp_servers.json` 并放置在项目根目录。其格式应当和 `example_mcp_servers.json` 一致。
 
 ### 2. API 密钥配置
 
-由于扫描涉及大语言模型（LLM），请在 MCPSecAgent 目录下创建 `.env` 文件并填入你的 API 密钥，参考 `.env.example` 文件。
+由于扫描涉及大语言模型（LLM），请在 `MCPSecAgent` 目录下创建 `.env` 文件并填入你要使用的 Model ID、Base URL 以及 API 密钥，格式参考 `MCPSecAgent/.env.example` 文件。
 
 
-### 3. 一键执行工作流
+### 3. 一键执行
 
 我们提供了一个总控脚本 `run_workflow.sh`，它可以自动完成从源码下载到安全分析的所有步骤：
 
@@ -32,12 +32,21 @@ uv pip install -r requirements.txt
 chmod +x run_workflow.sh
 
 # 方式 1: 使用默认参数 (bench_dir=/tmp/mcp-benchmark, max_concurrent=3)
+# /tmp/mcp-benchmark 是模型会进行扫描的路径
 ./run_workflow.sh
 
-# 方式 2: 指定并发数为 5
-./run_workflow.sh /tmp/mcp-benchmark 5
+# 方式 2: 指定并发数为 3
+# 请依照服务器能力而定，设定参考：4 核/5 GB内存/86 GB储存的服务器，建议设置为 3
+./run_workflow.sh 3
+
 ```
 
+### 4. 结果查看
+
+扫描结果将统一保存在以下目录：
+
+- **RQ1 实验数据**: `results/rq1/` , 包含 `llm_only`, `single_agent`, `semant_guard` 三个子文件夹
+- **RQ2 实验数据**: `results/rq2/scan_with_intent_capability`
 ---
 
 ## 核心工作流说明
@@ -54,15 +63,4 @@ chmod +x run_workflow.sh
 
 ---
 
-## 结果查看
-
-扫描结果将统一保存在以下目录：
-
-- **RQ1 实验数据**: `results/rq1/` (按方法子文件夹存放)
-- **RQ2 实验数据**: `results/rq2/scan_with_intent_capability`
-- **执行过程日志**: `logs/workflow_YYYYMMDD_HHMMSS/` 目录下可追溯每一步的详细输出。
-
----
-
 ## 维护
-
