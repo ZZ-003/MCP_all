@@ -4,7 +4,6 @@ from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain.agents.structured_output import ToolStrategy
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 from langchain_core.messages import HumanMessage, AIMessage
 
 import logging

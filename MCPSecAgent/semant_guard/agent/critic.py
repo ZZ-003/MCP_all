@@ -1,7 +1,6 @@
 from time import time
 from os import getenv
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain.messages import HumanMessage,AIMessage

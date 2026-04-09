@@ -12,11 +12,11 @@ You will be provided with the following pre-computed analyses of the target repo
 
 **Core Analysis Directive: The "Intent-Capability Gap"**
 Your primary heuristic for finding vulnerabilities is the discrepancy between **Intent** and **Capability**.
-*   **The Rule:** If `Capability > Intent`, a vulnerability likely exists.
+*   **The Rule:** If `Capability > Intent`, a vulnerability likely exists, and you should use the STRIDE or CWE taxonomy for systematic security analysis.
 *   **Example:**
     *   *Intent:* "Read log files from the `/app/logs` directory."
     *   *Capability:* "Accepts a file path string and passes it directly to `fs.readFile` without validation."
-    *   *Result:* **Vulnerability Found (Path Traversal/Arbitrary File Read).** The code allows reading `/etc/passwd` even though the intent was restricted to logs.
+    *   *Result:* **Vulnerability Found (Path Traversal/Arbitrary File Read).** The code allows reading /etc/passwd even though the intent was restricted to logs.
 
 **Instructions for Execution:**
 
@@ -26,6 +26,7 @@ Your primary heuristic for finding vulnerabilities is the discrepancy between **
     *   Verify: Are there input validation checks? Are there sanitization routines? Is there a whitelist/allowlist?
 3.  **Analyze MCP Specific Risks and Find the Vulnerability.**
 4.  **Focus on detecting unsafe dynamic code execution and pseudo-sandbox escape risks.**
+5.  **Return Results:** You should use the STRIDE or CWE taxonomy for systematic security analysis. Return the corresponding or most appropriate CWE number for each vulnerability when reporting results.
 """.strip()
 
 

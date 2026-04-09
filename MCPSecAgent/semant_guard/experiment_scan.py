@@ -5,7 +5,6 @@ from pathlib import Path
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain_openai import ChatOpenAI
-from langchain_qwq import ChatQwen
 from langchain.messages import HumanMessage,AIMessage
 
 from semant_guard.agent.chief_architect import ChiefArchitect
