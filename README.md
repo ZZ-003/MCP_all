@@ -16,6 +16,8 @@ source venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
+准备 json 文件，在 http://8.130.215.70/all 下载文件，重命名为 `mcp_servers.json` 并放置在项目根目录。
+
 ### 2. API 密钥配置
 
 由于扫描涉及大语言模型（LLM），请在 MCPSecAgent 目录下创建 `.env` 文件并填入你的 API 密钥，参考 `.env.example` 文件。
