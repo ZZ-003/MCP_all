@@ -1,10 +1,26 @@
 #!/bin/bash
 
 # Master Workflow Orchestration Script
-# Usage: bash run_workflow.sh [bench_dir] [max_concurrent]
+# Usage: 
+#   ./run_workflow.sh [max_concurrent]
+#   ./run_workflow.sh [bench_dir] [max_concurrent]
 
-BENCH_DIR=${1:-/tmp/mcp-benchmark}
-MAX_CONCURRENT_NUM=${2:-3}
+# Default values
+BENCH_DIR="/tmp/mcp-benchmark"
+MAX_CONCURRENT_NUM=3
+
+# Parse arguments
+if [ $# -eq 1 ]; then
+    # If only one argument, check if it's a number (max_concurrent) or a string (bench_dir)
+    if [[ $1 =~ ^[0-9]+$ ]]; then
+        MAX_CONCURRENT_NUM=$1
+    else
+        BENCH_DIR=$1
+    fi
+elif [ $# -ge 2 ]; then
+    BENCH_DIR=$1
+    MAX_CONCURRENT_NUM=$2
+fi
 echo "=========================================================="
 echo "Starting Master Workflow"
 echo "Benchmark Directory: $BENCH_DIR"
