@@ -3,11 +3,27 @@
 Script to download MCP server source code from GitHub repositories.
 """
 
+import argparse
+import concurrent.futures
 import json
+import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 from urllib.parse import urlparse
+
+
+def _normalize_source_url(url: str) -> str:
+    url = (url or "").strip()
+    if len(url) >= 2 and url[0] == "<" and url[-1] == ">":
+        url = url[1:-1].strip()
+
+    lowered = url.lower()
+    if lowered.startswith("github.com/") or lowered.startswith("www.github.com/"):
+        url = "https://" + url
+
+    return url
 
 
 def load_mcp_servers(json_path: str) -> list[dict]:
@@ -18,13 +34,22 @@ def load_mcp_servers(json_path: str) -> list[dict]:
 
 def get_domain(url: str) -> str:
     """Extract domain from URL."""
-    parsed = urlparse(url)
+    parsed = urlparse(_normalize_source_url(url))
     return parsed.netloc.lower()
 
 
 def is_github_url(url: str) -> bool:
     """Check if URL is a GitHub repository."""
-    return 'github.com' in get_domain(url)
+    normalized = _normalize_source_url(url)
+
+    if re.match(r"^git@github\.com:[^/]+/[^/]+", normalized, flags=re.IGNORECASE):
+        return True
+
+    if normalized.lower().startswith("ssh://"):
+        parsed = urlparse(normalized)
+        return parsed.hostname is not None and parsed.hostname.lower() == "github.com"
+
+    return get_domain(normalized) == "github.com"
 
 
 def sanitize_name(name: str) -> str:
@@ -37,21 +62,66 @@ def sanitize_name(name: str) -> str:
     return sanitized[:100]  # Limit length
 
 
-def extract_github_repo_info(url: str) -> tuple[str, str] | None:
-    """Extract owner and repo name from GitHub URL."""
-    # Handle various GitHub URL formats
-    patterns = [
-        r'github\.com/([^/]+)/([^/]+)/?',
-        r'github\.com/([^/]+)/([^/]+)/.*',
+def extract_github_repo_info(url: str) -> tuple[str, str, str | None] | None:
+    """Extract owner, repo name, and optional sub-path from GitHub URL."""
+    normalized = _normalize_source_url(url)
+
+    match = re.match(
+        r"^git@github\.com:(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$",
+        normalized,
+        flags=re.IGNORECASE,
+    )
+    if match:
+        return match.group("owner"), match.group("repo"), None
+
+    if normalized.lower().startswith("ssh://"):
+        parsed = urlparse(normalized)
+        if parsed.hostname and parsed.hostname.lower() == "github.com":
+            parts = [p for p in (parsed.path or "").split("/") if p]
+            if len(parts) >= 2:
+                owner, repo = parts[0], parts[1]
+                if repo.lower().endswith(".git"):
+                    repo = repo[:-4]
+                return owner, repo, None
+        return None
+
+    parsed = urlparse(normalized)
+    host = (parsed.hostname or "").lower()
+    if host != "github.com":
+        return None
+    parts = [p for p in (parsed.path or "").split("/") if p]
+    if len(parts) < 2:
+        return None
+
+    owner, repo = parts[0], parts[1]
+    if repo.lower().endswith(".git"):
+        repo = repo[:-4]
+    
+    sub_path = None
+    if len(parts) > 4 and parts[2] == "tree":
+        sub_path = "/".join(parts[4:])
+        
+    if not owner or not repo:
+        return None
+    return owner, repo, sub_path
+
+
+def _self_check() -> None:
+    cases: list[tuple[str, tuple[str, str, str | None]]] = [
+        ("github.com/octocat/Hello-World", ("octocat", "Hello-World", None)),
+        ("https://github.com/octocat/Hello-World.git", ("octocat", "Hello-World", None)),
+        ("git@github.com:octocat/Hello-World.git", ("octocat", "Hello-World", None)),
+        ("ssh://git@github.com/octocat/Hello-World.git", ("octocat", "Hello-World", None)),
+        ("https://github.com/octocat/Hello-World/tree/main", ("octocat", "Hello-World", None)),
+        ("https://github.com/modelcontextprotocol/servers/tree/main/src/fetch", ("modelcontextprotocol", "servers", "src/fetch")),
+        ("<https://github.com/octocat/Hello-World>", ("octocat", "Hello-World", None)),
     ]
-    for pattern in patterns:
-        match = re.search(pattern, url)
-        if match:
-            return match.group(1), match.group(2)
-    return None
+    for url, expected in cases:
+        assert is_github_url(url), url
+        assert extract_github_repo_info(url) == expected, url
 
 
-def run_command(cmd: list[str], cwd: str = None, timeout: int = 300) -> tuple[bool, str]:
+def run_command(cmd: list[str], cwd: str = None, timeout: int = 240) -> tuple[bool, str]:
     """Run a shell command and return success status and output."""
     try:
         result = subprocess.run(
@@ -69,29 +139,61 @@ def run_command(cmd: list[str], cwd: str = None, timeout: int = 300) -> tuple[bo
 
 
 def download_github_repo(url: str, dest_dir: Path, server_name: str) -> bool:
-    """Clone a GitHub repository."""
+    """Clone a GitHub repository and optionally extract a sub-directory."""
     repo_info = extract_github_repo_info(url)
     if not repo_info:
         print(f"  [!] Could not parse GitHub URL: {url}")
         return False
     
-    owner, repo = repo_info
-    clone_url = f"https://github.com/{owner}/{repo}.git"
-    target_dir = dest_dir / sanitize_name(f"mcp-{repo}")
+    owner, repo, sub_path = repo_info
+    
+    # Target name: mcp-{last_part_of_url}
+    url_parts = [p for p in url.rstrip("/").split("/") if p]
+    last_url_part = url_parts[-1] if url_parts else repo
+    target_dir = dest_dir / sanitize_name(f"mcp-{last_url_part}")
     
     if target_dir.exists():
         print(f"  [~] Already exists: {target_dir}")
         return True
     
-    print(f"  [*] Cloning from GitHub: {owner}/{repo}")
-    success, output = run_command(['git', 'clone', '--depth', '1', clone_url, str(target_dir)])
+    clone_url = f"https://github.com/{owner}/{repo}.git"
     
-    if success:
-        print(f"  [+] Successfully cloned to {target_dir}")
-        return True
+    if sub_path:
+        # Clone to a temporary directory if extracting a sub-path
+        temp_dir = dest_dir / f"temp-clone-{sanitize_name(repo)}-{os.getpid()}"
+        if temp_dir.exists():
+            shutil.rmtree(temp_dir)
+            
+        print(f"  [*] Cloning full repo for sub-path extraction: {owner}/{repo}")
+        success, output = run_command(['git', 'clone', '--depth', '1', clone_url, str(temp_dir)])
+        
+        if success:
+            source_sub_dir = temp_dir / sub_path
+            if source_sub_dir.exists():
+                shutil.move(str(source_sub_dir), str(target_dir))
+                shutil.rmtree(temp_dir)
+                print(f"  [+] Successfully extracted sub-path {sub_path} to {target_dir}")
+                return True
+            else:
+                print(f"  [-] Sub-path not found in repo: {sub_path}")
+                shutil.rmtree(temp_dir)
+                return False
+        else:
+            print(f"  [-] Clone failed for sub-path extraction: {output[:200]}")
+            if temp_dir.exists():
+                shutil.rmtree(temp_dir)
+            return False
     else:
-        print(f"  [-] Clone failed: {output[:200]}")
-        return False
+        # Standard clone
+        print(f"  [*] Cloning from GitHub: {owner}/{repo}")
+        success, output = run_command(['git', 'clone', '--depth', '1', clone_url, str(target_dir)])
+        
+        if success:
+            print(f"  [+] Successfully cloned to {target_dir}")
+            return True
+        else:
+            print(f"  [-] Clone failed: {output[:200]}")
+            return False
 
 
 def download_source(entry: dict, dest_dir: Path) -> tuple[bool, bool]:
@@ -120,8 +222,25 @@ def download_source(entry: dict, dest_dir: Path) -> tuple[bool, bool]:
         return False, True
 
 
+def process_entry(entry: dict, dest_dir: Path) -> tuple[bool, bool, dict | None]:
+    """Process a single entry: download or skip."""
+    success, is_skipped = download_source(entry, dest_dir)
+    skipped_info = None
+    if is_skipped:
+        skipped_info = {
+            "serverName": entry.get('serverName', 'unknown'),
+            "source": entry.get('source', ''),
+            "reason": "Not a GitHub URL"
+        }
+    return success, is_skipped, skipped_info
+
+
 def main():
     """Main entry point."""
+    parser = argparse.ArgumentParser(description="Download MCP server source code.")
+    parser.add_argument("--max-concurrent", type=int, default=3, help="Maximum concurrent downloads (default: 3)")
+    args = parser.parse_args()
+
     script_dir = Path(__file__).parent
     json_path = script_dir / "mcp_servers.json"
     dest_dir = script_dir / "MCPZoo"
@@ -136,6 +255,7 @@ def main():
     print(f"Loading MCP servers from: {json_path}")
     servers = load_mcp_servers(str(json_path))
     print(f"Found {len(servers)} servers")
+    print(f"Max Concurrent: {args.max_concurrent}")
     print(f"Destination: {dest_dir}")
     print("=" * 60)
     
@@ -144,21 +264,26 @@ def main():
     skip_count = 0
     skipped_servers = []
     
-    for i, entry in enumerate(servers, 1):
-        print(f"\n[{i}/{len(servers)}]")
-        success, is_skipped = download_source(entry, dest_dir)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_concurrent) as executor:
+        future_to_entry = {
+            executor.submit(process_entry, entry, dest_dir): entry 
+            for entry in servers
+        }
         
-        if is_skipped:
-            skip_count += 1
-            skipped_servers.append({
-                "serverName": entry.get('serverName', 'unknown'),
-                "source": entry.get('source', ''),
-                "reason": "Not a GitHub URL"
-            })
-        elif success:
-            success_count += 1
-        else:
-            fail_count += 1
+        for future in concurrent.futures.as_completed(future_to_entry):
+            try:
+                success, is_skipped, skipped_info = future.result()
+                if is_skipped:
+                    skip_count += 1
+                    if skipped_info:
+                        skipped_servers.append(skipped_info)
+                elif success:
+                    success_count += 1
+                else:
+                    fail_count += 1
+            except Exception as exc:
+                print(f"Generated an exception: {exc}")
+                fail_count += 1
     
     # Save skipped servers to JSON file
     with open(skipped_json_path, 'w', encoding='utf-8') as f:
@@ -174,4 +299,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if os.getenv("MCP_URL_SELF_CHECK") == "1":
+        _self_check()
+    else:
+        main()

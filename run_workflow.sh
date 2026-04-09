@@ -37,7 +37,7 @@ run_step() {
 }
 
 # Step 1: Download MCP sources
-run_step "1_download_sources" "python3 download_mcp_sources.py"
+run_step "1_download_sources" "python3 download_mcp_sources.py --max-concurrent $MAX_CONCURRENT_NUM"
 
 # Step 2: Setup benchmark directory (Equivalent to MCPZoo/setup.sh)
 run_step "2_setup_benchmark" "python3 MCPZoo/setup_benchmark.py --bench-dir $BENCH_DIR"
