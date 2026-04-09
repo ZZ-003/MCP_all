@@ -49,6 +49,7 @@ chmod +x run_workflow.sh
 - **RQ2 实验数据**: `results/rq2/scan_with_intent_capability`
 
 每个结果的扫描过程会保存在 `MCPSecAgent/results/logs` 目录下。
+
 ---
 
 ## 核心工作流说明
