@@ -11,3 +11,6 @@ Thumbs.db
 .venv/
 .venv
 results/
+venv/
+results/
+mcp-*/
