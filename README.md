@@ -54,14 +54,12 @@ chmod +x run_workflow.sh
 
 ## 核心工作流说明
 
-总控脚本将依次执行以下四个步骤，每步生成的日志可在 `logs/` 目录下查看：
-
 1.  **数据采集**: 运行 `download_mcp_sources.py`，根据 `mcp_servers.json` 下载 GitHub 源码至 `MCPZoo/`。
 2.  **环境初始化**: 运行 `setup_benchmark.py`，将源码部署到测试路径 `/tmp/mcp-benchmark`。
 3.  **RQ1 评估**: 依次运行 `exp_rq1.py` 的三种扫描方法：
     - `llm_only`: 仅使用 LLM 进行扫描
     - `single_agent`: 单代理驱动扫描
-    - `semant_guard`: 基于语义的扫描
+    - `semant_guard`: 配置 ltm 的单代理扫描
 4.  **RQ2 评估**: 运行 `exp_rq2.py`，从“意图”与“能力”维度进行进阶安全扫描。
 
 ---
