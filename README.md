@@ -22,7 +22,7 @@ uv pip install -r requirements.txt
 
 由于扫描涉及大语言模型（LLM），请在 `MCPSecAgent` 目录下创建 `.env` 文件并填入你要使用的 Model ID、Base URL 以及 API 密钥，格式参考 `MCPSecAgent/.env.example` 文件。
 
-由于涉及从 github 仓库上下载代码，为避免出现限流，需要设置个人令牌
+由于涉及从 github 仓库上下载代码，为避免出现限流，需要设置个人令牌（此令牌只会用于下载仓库，无其他操作）
 
 ```bash
 export GITHUB_TOKEN="input_token"
