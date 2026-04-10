@@ -21,6 +21,24 @@ elif [ $# -ge 2 ]; then
     BENCH_DIR=$1
     MAX_CONCURRENT_NUM=$2
 fi
+
+# GitHub Token Setup
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "----------------------------------------------------------"
+    echo "未检测到 GITHUB_TOKEN 环境变量。"
+    read -p "请输入您的 GitHub Personal Access Token: " input_token
+    if [ -z "$input_token" ]; then
+        echo "错误: 未输入 Token，程序退出。"
+        exit 1
+    fi
+    export GITHUB_TOKEN="$input_token"
+    echo "GitHub Token 已设置。"
+else
+    export GITHUB_TOKEN="$GITHUB_TOKEN"
+    echo "使用已有的 GITHUB_TOKEN 环境变量。"
+fi
+echo "----------------------------------------------------------"
+
 echo "=========================================================="
 echo "Starting Master Workflow"
 echo "Benchmark Directory: $BENCH_DIR"

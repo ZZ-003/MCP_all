@@ -22,6 +22,11 @@ uv pip install -r requirements.txt
 
 由于扫描涉及大语言模型（LLM），请在 `MCPSecAgent` 目录下创建 `.env` 文件并填入你要使用的 Model ID、Base URL 以及 API 密钥，格式参考 `MCPSecAgent/.env.example` 文件。
 
+由于涉及从 github 仓库上下载代码，为避免出现限流，需要设置个人令牌
+
+```bash
+export GITHUB_TOKEN="input_token"
+```
 
 ### 3. 一键执行
 
@@ -47,6 +52,8 @@ chmod +x run_workflow.sh
 
 - **RQ1 实验数据**: `results/rq1/` , 包含 `llm_only`, `single_agent`, `semant_guard` 三个子文件夹
 - **RQ2 实验数据**: `results/rq2/scan_with_intent_capability`
+- `filtered_mcp_servers.json`：正确的且已下载的 github url
+- `skipped_servers.json`：非 github url
 
 每个结果的扫描过程会保存在 `MCPSecAgent/results/logs` 目录下。
 
@@ -54,7 +61,7 @@ chmod +x run_workflow.sh
 
 ## 核心工作流说明
 
-1.  **数据采集**: 运行 `download_mcp_sources.py`，根据 `mcp_servers.json` 下载 GitHub 源码至 `MCPZoo/`。
+1.  **数据采集**: 运行 `download_mcp_sources.py`，根据 `mcp_servers.json` 下载 GitHub 源码至 `MCPZoo/`，设置的下载上限数量是 10000，若触发限流，请在 download_mcp_sources.py 中修改下载上限数量。
 2.  **环境初始化**: 运行 `setup_benchmark.py`，将源码部署到测试路径 `/tmp/mcp-benchmark`。
 3.  **RQ1 评估**: 依次运行 `exp_rq1.py` 的三种扫描方法：
     - `llm_only`: 仅使用 LLM 进行扫描

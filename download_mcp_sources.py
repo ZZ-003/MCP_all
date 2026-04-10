@@ -156,7 +156,11 @@ def download_github_repo(url: str, dest_dir: Path, server_name: str) -> bool:
         print(f"  [~] Already exists: {target_dir}")
         return True
     
-    clone_url = f"https://github.com/{owner}/{repo}.git"
+    token = os.getenv("GITHUB_TOKEN")
+    if token:
+        clone_url = f"https://x-access-token:{token}@github.com/{owner}/{repo}.git"
+    else:
+        clone_url = f"https://github.com/{owner}/{repo}.git"
     
     if sub_path:
         # Clone to a temporary directory if extracting a sub-path
@@ -196,44 +200,94 @@ def download_github_repo(url: str, dest_dir: Path, server_name: str) -> bool:
             return False
 
 
-def download_source(entry: dict, dest_dir: Path) -> tuple[bool, bool]:
+def download_source(entry: dict, dest_dir: Path) -> tuple[bool, bool, str | None]:
     """Download source based on URL type.
     
     Returns:
-        tuple[bool, bool]: (success, is_skipped)
+        tuple[bool, bool, str | None]: (success, is_skipped, mcp_name)
         - success: True if download succeeded, False otherwise
         - is_skipped: True if URL was skipped (not GitHub), False otherwise
+        - mcp_name: The name of the created directory
     """
     url = entry.get('source', '').strip()
     server_name = entry.get('serverName', 'unknown')
     
     if not url:
         print(f"  [-] No source URL for: {server_name}")
-        return False, True
+        return False, True, None
     
     print(f"\n[{server_name}]")
     print(f"  URL: {url}")
     
-    # Only process GitHub URLs, skip others
-    if is_github_url(url):
-        return download_github_repo(url, dest_dir, server_name), False
-    else:
+    if not is_github_url(url):
         print(f"  [~] Skipped (not a GitHub URL)")
-        return False, True
+        return False, True, None
+
+    repo_info = extract_github_repo_info(url)
+    if not repo_info:
+        print(f"  [~] Skipped (could not parse GitHub URL)")
+        return False, True, None
+
+    owner, repo, _ = repo_info
+    
+    # Calculate mcp_name here to return it
+    url_parts = [p for p in url.rstrip("/").split("/") if p]
+    last_url_part = url_parts[-1] if url_parts else repo
+    mcp_name = sanitize_name(f"mcp-{last_url_part}")
+
+    success = download_github_repo(url, dest_dir, server_name)
+    return success, False, mcp_name
 
 
-def process_entry(entry: dict, dest_dir: Path) -> tuple[bool, bool, dict | None]:
+def process_entry(entry: dict, dest_dir: Path) -> tuple[bool, bool, dict | None, dict | None]:
     """Process a single entry: download or skip."""
-    success, is_skipped = download_source(entry, dest_dir)
-    skipped_info = None
-    if is_skipped:
-        skipped_info = {
-            "serverName": entry.get('serverName', 'unknown'),
+    url = entry.get('source', '').strip()
+    server_name = entry.get('serverName', 'unknown')
+
+    if not url:
+        return False, True, {
+            "serverName": server_name,
+            "source": entry.get('source', ''),
+            "reason": "No source URL"
+        }, None
+
+    if not is_github_url(url):
+        return False, True, {
+            "serverName": server_name,
             "source": entry.get('source', ''),
             "reason": "Not a GitHub URL"
-        }
-    return success, is_skipped, skipped_info
+        }, None
 
+    repo_info = extract_github_repo_info(url)
+    if not repo_info:
+        return False, True, {
+            "serverName": server_name,
+            "source": entry.get('source', ''),
+            "reason": "Could not parse GitHub URL"
+        }, None
+
+    success, is_skipped, mcp_name = download_source(entry, dest_dir)
+    
+    if is_skipped:
+        return False, True, {
+            "serverName": server_name,
+            "source": url,
+            "reason": "Skipped during download"
+        }, None
+
+    if success:
+        matched_info = {
+            "serverName": server_name,
+            "mcpName": mcp_name,
+            "source": url,
+        }
+        return True, False, None, matched_info
+    else:
+        return False, False, {
+            "serverName": server_name,
+            "source": url,
+            "reason": "Download failed"
+        }, None
 
 def main():
     """Main entry point."""
@@ -245,6 +299,7 @@ def main():
     json_path = script_dir / "mcp_servers.json"
     dest_dir = script_dir / "MCPZoo"
     skipped_json_path = script_dir / "skipped_servers.json"
+    filtered_json_path = script_dir / "filtered_mcp_servers.json"
     
     if not json_path.exists():
         print(f"Error: JSON file not found: {json_path}")
@@ -255,6 +310,7 @@ def main():
     print(f"Loading MCP servers from: {json_path}")
     servers = load_mcp_servers(str(json_path))
     print(f"Found {len(servers)} servers")
+    
     print(f"Max Concurrent: {args.max_concurrent}")
     print(f"Destination: {dest_dir}")
     print("=" * 60)
@@ -264,26 +320,48 @@ def main():
     skip_count = 0
     skipped_servers = []
     
+    matched_repos = []
+    max_downloads = 10000
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_concurrent) as executor:
         future_to_entry = {
-            executor.submit(process_entry, entry, dest_dir): entry 
+            executor.submit(process_entry, entry, dest_dir): entry
             for entry in servers
         }
         
         for future in concurrent.futures.as_completed(future_to_entry):
+            if success_count >= max_downloads:
+                print(f"\n[!] Reached maximum download limit of {max_downloads}. Stopping...")
+                # Cancel remaining futures
+                for f in future_to_entry:
+                    f.cancel()
+                break
+
             try:
-                success, is_skipped, skipped_info = future.result()
+                success, is_skipped, skipped_info, matched_info = future.result()
                 if is_skipped:
                     skip_count += 1
                     if skipped_info:
                         skipped_servers.append(skipped_info)
                 elif success:
                     success_count += 1
+                    if matched_info:
+                        matched_repos.append(matched_info)
+                        # Optional: Print progress every 100 downloads
+                        if success_count % 100 == 0:
+                            print(f"  >>> Progress: {success_count} downloads completed")
                 else:
                     fail_count += 1
+                    if skipped_info:
+                        skipped_servers.append(skipped_info)
+
             except Exception as exc:
                 print(f"Generated an exception: {exc}")
                 fail_count += 1
+
+    with open(filtered_json_path, 'w', encoding='utf-8') as f:
+        json.dump(matched_repos, f, ensure_ascii=False, indent=2)
+    print(f"\n[+] Filtered repos saved to: {filtered_json_path}")
     
     # Save skipped servers to JSON file
     with open(skipped_json_path, 'w', encoding='utf-8') as f:
@@ -296,6 +374,7 @@ def main():
     print(f"  Failed: {fail_count}")
     print(f"  Skipped: {skip_count}")
     print(f"  Total: {len(servers)}")
+    print(f"  Matched: {len(matched_repos)}")
 
 
 if __name__ == "__main__":
