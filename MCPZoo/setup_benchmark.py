@@ -9,9 +9,11 @@ ROOT_DIR = Path(__file__).parent
 
 def setup_bench_dir(bench_dir: str) -> Path:
     BENCH_DIR = Path(bench_dir)
-    BENCH_DIR.mkdir(parents=True, exist_ok=True)
-    if os.path.exists(BENCH_DIR):
+    
+    if BENCH_DIR.exists():
         shutil.rmtree(BENCH_DIR)
+    BENCH_DIR.mkdir(parents=True, exist_ok=True)
+
     for mcp_dir in ROOT_DIR.glob("mcp-*"):
         if mcp_dir.is_dir():
             print(f"Setting up {mcp_dir.name}")
