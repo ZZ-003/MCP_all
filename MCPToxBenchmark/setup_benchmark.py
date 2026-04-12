@@ -23,9 +23,10 @@ SERVICE_DIR = ROOT_DIR / "service"
 
 def setup_bench_dir(bench_dir: str) -> Path:
     BENCH_DIR = Path(bench_dir)
-    BENCH_DIR.mkdir(parents=True, exist_ok=True)
+
     if os.path.exists(BENCH_DIR):
         shutil.rmtree(BENCH_DIR)
+    BENCH_DIR.mkdir(parents=True, exist_ok=True)
 
     for all_gen_mcp_dir in (ROOT_DIR / "gen-benchmark").glob("output*"):
         for mcp_dir in all_gen_mcp_dir.iterdir():
