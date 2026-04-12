@@ -24,7 +24,7 @@ def setup_bench_dir(bench_dir: str) -> Path:
             mcp_tmp_dir.mkdir(parents=True, exist_ok=True)
             proj_poc_dir = BENCH_DIR / mcp_dir.name / "poc"
             proj_poc_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copytree(mcp_dir, mcp_tmp_dir, dirs_exist_ok=True,  ignore=copy_ignore)
+            shutil.copytree(mcp_dir, mcp_tmp_dir, dirs_exist_ok=True,  ignore=copy_ignore, ignore_dangling_symlinks=True)
 
     return BENCH_DIR
 
