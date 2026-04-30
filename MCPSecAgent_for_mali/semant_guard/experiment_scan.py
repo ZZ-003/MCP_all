@@ -46,15 +46,13 @@ async def agent_with_ltm_scan(project_dir: str) -> dict:
             virtual_mode=True,
         ),
         middleware=[
-            # get_structured_output_middleware(project_dir, VulnResponse, llm),
-            get_structured_output_middleware(project_dir, MaliResponse, llm),   # 此时是恶意描述 Mali
+            get_structured_output_middleware(project_dir, MaliResponse, llm),   
         ],
     )
     prompt = "I have been provided with global analysis information for this code repository. Now I can begin my task."
     response = await agent.ainvoke({
         "messages": [
-            # HumanMessage(content=CODE_SCAN_PROMPT),            
-            HumanMessage(content=MALICIOUS_TOOL_PROMPT),    # 此时是恶意描述 Mali 
+            HumanMessage(content=MALICIOUS_TOOL_PROMPT),    
             HumanMessage(content=longterm_memory_to_markdown(ltm)),
             AIMessage(content=prompt),
         ]

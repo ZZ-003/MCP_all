@@ -28,18 +28,12 @@ class Critic():
         )
         self.agent = create_deep_agent(
             model=self.llm,
-            # backend=FilesystemBackend(
-            #     root_dir=project_dir,
-            #     virtual_mode=True,
-            # ),
-            # middleware=[get_structured_output_middleware(project_dir, VulnResponse, self.llm)],     # 此时是漏洞分析 Vuln
-            middleware=[get_structured_output_middleware(project_dir, MaliResponse, self.llm)],    # 此时是恶意描述 Mali
+            middleware=[get_structured_output_middleware(project_dir, MaliResponse, self.llm)],   
         )
         self.ltm = ltm
         self.all_tool_stm = all_tool_stm
 
-    # async def critical_analysis(self) -> VulnResponse:   # 此时是漏洞分析 Vuln
-    async def critical_analysis(self) -> MaliResponse:     # 此时是恶意描述 Mali
+    async def critical_analysis(self) -> MaliResponse:    
         stm_markdown = "Tool Intent and Capability Analysis Memory\n\n"
         for tool_name, stm in self.all_tool_stm.items():
             stm_markdown += f"## Tool: {tool_name}\n"
@@ -49,7 +43,7 @@ class Critic():
 
         response = await self.agent.ainvoke({
             "messages": [
-                HumanMessage(content=CRITIC_ANALYSIS_PROMPT),   # 此时是恶意描述 Mali
+                HumanMessage(content=CRITIC_ANALYSIS_PROMPT),  
                 HumanMessage(content=longterm_memory_to_markdown(self.ltm)),
                 HumanMessage(content=stm_markdown),
                 AIMessage(content=ai_message),

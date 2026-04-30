@@ -52,8 +52,7 @@ class TaintSleuths:
                 HumanMessage(content=INTENT_CAPABILITY_STATIC_ANALYSIS_PROMPT), 
                 HumanMessage(content=longterm_memory_to_markdown(self.ltm)),
                 HumanMessage(content=prompt),
-                # AIMessage(content=(ACTION_LIMIT + ADD_LIMIT + TASK_INSTRUCTION)),  # 漏洞分析用
-                AIMessage(content=(ACTION_LIMIT + "For each identified tool that appears in the 'Long Term Memory of this MCP Server Project', I need to use read_file to read the corresponding code for analysis." + TASK_INSTRUCTION)),  # 恶意描述检测用 Mali
+                AIMessage(content=(ACTION_LIMIT + "For each identified tool that appears in the 'Long Term Memory of this MCP Server Project', I need to use read_file to read the corresponding code for analysis." + TASK_INSTRUCTION)),  
             ]
         })
         log_dir = setup_log_dir(self.project_dir, "taint_sleuths_static")

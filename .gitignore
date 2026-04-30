@@ -16,5 +16,6 @@ results-*/
 *.json
 output_python/
 vuln_log_and_json/
+mali_log_and_json/
 
 mcp-scanner/

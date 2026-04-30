@@ -2,7 +2,6 @@ import json
 import os
 from pathlib import Path
 
-#初步统计 result.json,这会刷新结果，要依次跑遍 03
 
 def load_json_file(file_path: str) -> dict | list:
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -39,7 +38,6 @@ def calculate_metrics(all_tools: list, answer_data: dict, target_data: dict,ltm_
     ltm_tools_set = get_ltm_tools(ltm_data) if ltm_data else None
     
     true_positive_num = 0
-    # 对于每一个出现在all_tools_set中的tool
     for tool in all_tools_set:
         if tool in target_tools_set and tool in answer_tools_set:
             target_vuln_types = target_tool_types.get(tool, [])
@@ -64,10 +62,8 @@ def calculate_metrics(all_tools: list, answer_data: dict, target_data: dict,ltm_
     for tool in all_tools_set:
         if tool in answer_tools_set:
             if tool not in target_tools_set:
-                # 在 answer 中但不在 target 中
                 false_negative_num += 1
             elif not target_tool_types.get(tool, []):
-                # 在 target 中但 type 为空   
                 false_negative_num += 1
             elif target_tool_types.get(tool, []) == ["None"]:
                 false_negative_num += 1
@@ -93,7 +89,6 @@ def calculate_metrics(all_tools: list, answer_data: dict, target_data: dict,ltm_
 
 
 def process_subfolder(subfolder_path: Path) -> None:
-    """处理单个子文件夹，计算指标并保存结果"""
     all_tool_path = subfolder_path / 'all_tool.json'
     answer_path = subfolder_path / 'answer.json'
     target_path = subfolder_path / 'target.json'
@@ -108,20 +103,20 @@ def process_subfolder(subfolder_path: Path) -> None:
         ltm_path = None
     
     if not all_tool_path.exists():
-        print(f"  [跳过] {subfolder_path.name}: 缺少 all_tool.json")
+        print(f"  [skip] {subfolder_path.name}: missing all_tool.json")
         return
     if not answer_path.exists():
-        print(f"  [跳过] {subfolder_path.name}: 缺少 answer.json")
+        print(f"  [skip] {subfolder_path.name}: missing answer.json")
         return
     if not target_path.exists():
-        print(f"  [跳过] {subfolder_path.name}: 缺少 target.json")
+        print(f"  [skip] {subfolder_path.name}: missing target.json")
         return
     all_tools = load_json_file(all_tool_path)
     answer_data = load_json_file(answer_path)
     target_data = load_json_file(target_path)
     ltm_data = load_json_file(ltm_path) if ltm_path else None
     if (ltm_data == [] or ltm_data =={} or ltm_data ==None) and ltm_path is not None:
-        print(f"  [警告] {subfolder_path.name}: LTM 数据为空，可能影响评估结果")
+        print(f"  [warning] {subfolder_path.name}: LTM data is empty, may affect evaluation results")
     
     metrics = calculate_metrics(all_tools, answer_data, target_data,ltm_data)
     
@@ -139,17 +134,15 @@ def main():
 
     for exp_dir in EXPERIMENT_DIRS:
         base_dir = Path(__file__).parent / exp_dir
-
-        # base_dir = Path(__file__).parent / 'scan_with_intent_capability'
         
         if not base_dir.exists():
-            print(f"错误：目录不存在 - {base_dir}")
+            print(f"Error: directory does not exist - {base_dir}")
             continue
         
-        print(f"开始处理目录：{base_dir}")
+        print(f"Starting processing directory: {base_dir}")
         print("-" * 60)
         subfolders = [d for d in base_dir.iterdir() if d.is_dir()]
-        print(f"找到 {len(subfolders)} 个子文件夹")
+        print(f"Found {len(subfolders)} subfolders")
         print("-" * 60)
         
         for subfolder in sorted(subfolders):

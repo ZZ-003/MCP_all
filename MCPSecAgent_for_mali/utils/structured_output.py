@@ -20,17 +20,10 @@ def get_structured_output_middleware(project_dir:str,response_format, llm: ChatO
         
         analysis_msg = state["messages"]
         messages = analysis_msg
-
-        # analysis_msg = state["messages"][-1]
-        # messages = [analysis_msg]
-        # print("-------------")
-        # print(type(analysis_msg))
-        # print("================")
-        # print(type(messages))        
+    
         messages.append(HumanMessage(content=structured_output_instruction))
         
 
-        # 下面代码记录用
         project_path = Path(project_dir)
         name = project_path.name
         while name == "repo":
@@ -43,9 +36,9 @@ def get_structured_output_middleware(project_dir:str,response_format, llm: ChatO
             for his_msg in messages:
                 f.write(his_msg.pretty_repr()+ "\n")
             for state_msg in state["messages"]:
-                f.write("原先传入的所有state信息: \n" + state_msg.pretty_repr()+ "\n")
-            f.write("现在传入的信息倒数第二段:\n" + messages[-2].pretty_repr() + "\n")
-            f.write("现在传入的信息最后一段:\n" + messages[-1].pretty_repr() + "\n")
+                f.write("All originally passed state information: \n" + state_msg.pretty_repr()+ "\n")
+            f.write("Current second-to-last message:\n" + messages[-2].pretty_repr() + "\n")
+            f.write("Current last message:\n" + messages[-1].pretty_repr() + "\n")
             f.flush()
         
         response = await structured_output_agent.ainvoke(

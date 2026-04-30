@@ -13,7 +13,6 @@ class ConfidenceLevel(str, Enum):
     MEDIUM = "Medium"
     LOW = "Low"
 
-# 专门用于 llm_only 和 single_agent 的输出格式
 class AllLocation(BaseModel):
     file: str = Field(description="The file path where the detected MCP tool is located")
     lines: str = Field(description="The specific line numbers in the file(e.g., '45-50')")
@@ -32,7 +31,6 @@ class AllReport(BaseModel):
 
 class AllResponse(BaseModel):
     """A list of vulnerability reports extracted from the analysis."""
-    # 这里定义一个 list 字段
     vulnerabilities: List[AllReport] = Field(description="List of all MCP tools found in the input text")
 
 class VerifiedAllReport(AllReport):
@@ -44,7 +42,6 @@ class VerifiedAllResponse(BaseModel):
     verified_vulnerabilities: List[VerifiedAllReport] = Field(description="List of all verified vulnerabilities with PoC and flags")
 
 
-# 用于 扫描漏洞
 class Location(BaseModel):
     file: str = Field(description="The file path where the vulnerability resides")
     lines: str = Field(description="The specific line numbers affected (e.g., '45-50')")
@@ -62,7 +59,6 @@ class VulnReport(BaseModel):
 
 class VulnResponse(BaseModel):
     """A list of vulnerability reports extracted from the analysis."""
-    # 这里定义一个 list 字段
     vulnerabilities: List[VulnReport] = Field(description="List of all vulnerabilities found in the input text")
 
 class VerifiedVulnReport(VulnReport):
@@ -74,7 +70,7 @@ class VerifiedVulnResponse(BaseModel):
     verified_vulnerabilities: List[VerifiedVulnReport] = Field(description="List of all verified vulnerabilities with PoC and flags")
 
 
-# 用于 检测恶意工具
+# MALI
 class MaliLocation(BaseModel):
     file: str = Field(description="The file path where the malicious tools resides")
     lines: str = Field(description="The specific line numbers affected (e.g., '45-50')")

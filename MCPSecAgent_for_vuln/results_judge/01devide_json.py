@@ -21,9 +21,6 @@ def main():
     answer_path = repo_root / "MCPServerBenchmark/output/ground_truth.json"
     all_tool_path = repo_root / "MCPServerBenchmark/output/all_tool_info.json"
 
-    # Mali
-    # answer_path = repo_root / "MCPToxBenchmark/output/ground_truth.json"
-    # all_tool_path = repo_root / "MCPToxBenchmark/output/all_tool_info.json"
     
     if not target_path.exists():
         print(f"Error: directory does not exist: {target_path}")
