@@ -7,7 +7,7 @@ if ! docker network inspect mcp-shared-network &>/dev/null; then
 fi
 export NETWORK_NAME=mcp-shared-network
 
-bench_dir=${1:-/tmp/mcp-benchmark}
+bench_dir=${1:-/tmp/mcp-benchmark-mali}
 
 set -e
 python gen-benchmark/gen_python_mcp.py

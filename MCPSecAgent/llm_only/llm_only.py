@@ -21,12 +21,12 @@ async def llm_only_scan(project_dir: str) -> dict:
         model=getenv("LLM_ONLY_MODEL"),
         base_url=getenv("LLM_ONLY_BASE_URL"),
         api_key=getenv("LLM_ONLY_API_KEY"),
+        temperature=0,
     )
     agent = create_agent(
         model=llm,
         tools=[],
-        response_format=ToolStrategy(AllResponse)  # 此时是漏洞分析 Vuln
-        # response_format=ToolStrategy(MaliResponse)  # 此时是恶意描述 Mali
+        response_format=ToolStrategy(AllResponse)  # 此时是漏洞分析 Vuln，不是 恶意分析
     )
 
     # 需要跳过的目录和文件

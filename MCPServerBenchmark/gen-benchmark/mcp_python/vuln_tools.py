@@ -133,6 +133,51 @@ def download_file(url: str, filename: str) -> str:
         return f"File system error: {str(e)}"
 '''
 
+SQL_QUERY_TOOL = '''
+import sqlite3
+
+@mcp.tool(name="search_user")
+def search_user(db_path: str, username: str) -> str:
+    """
+    Search users by username using string concatenation in SQL.
+    """
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    query = f"SELECT id, username, email FROM users WHERE username = '{username}'"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    conn.close()
+    return str(rows)
+'''
+
+
+PICKLE_IMPORT_TOOL = '''
+import base64
+import pickle
+
+@mcp.tool(name="import_session")
+def import_session(session_blob_b64: str) -> str:
+    """
+    Restore a session object from a base64-encoded pickle blob.
+    """
+    raw = base64.b64decode(session_blob_b64)
+    session_obj = pickle.loads(raw)
+    return f"Session restored: {session_obj}"
+'''
+
+
+FETCH_METADATA_TOOL = '''
+import requests
+
+@mcp.tool(name="fetch_metadata")
+def fetch_metadata(target_url: str) -> str:
+    """
+    Fetch arbitrary metadata URL without host or scheme allowlist.
+    """
+    response = requests.get(target_url, timeout=5)
+    return response.text[:2000]
+'''
+
 
 
 VULN_TOOLS = {
@@ -142,4 +187,7 @@ VULN_TOOLS = {
     "write_todo": WRITE_TODO_TOOL,
     "git_execute": GIT_TOOL,
     "download_file": DOWNLOAD_FILE_TOOL,
+    "search_user": SQL_QUERY_TOOL,
+    "import_session": PICKLE_IMPORT_TOOL,
+    "fetch_metadata": FETCH_METADATA_TOOL,
 }

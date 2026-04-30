@@ -51,7 +51,7 @@ def calculate_statistics_for_dir(results_dir: Path) -> Dict:
                 stats["fp_files"].append((file_path.parent.name, FP))
             if FN != 0:
                 stats["fn_files"].append((file_path.parent.name, FN))
-            if CN != 6:
+            if CN != 8:
                 stats["cn_files"].append((file_path.parent.name, CN))
             if IN > 0:
                 stats["in_files"].append((file_path.parent.name, IN))
@@ -99,20 +99,20 @@ def print_directory_stats(stats: Dict):
         for fname, fn in stats['fn_files']:
             print(f"    - {fname}: FN={fn}")
     
-    if stats['cn_files']:
-        print(f"\n  [CN != 6] ({len(stats['cn_files'])} 个):")
-        for fname, cn in stats['cn_files']:
-            print(f"    - {fname}: CN={cn}")
+    # if stats['cn_files']:
+    #     print(f"\n  [CN != 6] ({len(stats['cn_files'])} 个):")
+    #     for fname, cn in stats['cn_files']:
+    #         print(f"    - {fname}: CN={cn}")
 
-    if stats['in_files']:
-        print(f"\n  [IN > 0] ({len(stats['in_files'])} 个):")
-        for fname, in_val in stats['in_files']:
-            print(f"    - {fname}: IN={in_val}")
+    # if stats['in_files']:
+    #     print(f"\n  [IN > 0] ({len(stats['in_files'])} 个):")
+    #     for fname, in_val in stats['in_files']:
+    #         print(f"    - {fname}: IN={in_val}")
     
-    if stats['errors']:
-        print(f"\n  [ERRORS] ({len(stats['errors'])} 个):")
-        for fname, err in stats['errors']:
-            print(f"    - {fname}: {err}")
+    # if stats['errors']:
+    #     print(f"\n  [ERRORS] ({len(stats['errors'])} 个):")
+    #     for fname, err in stats['errors']:
+    #         print(f"    - {fname}: {err}")
 
 
 def calculate_statistics():

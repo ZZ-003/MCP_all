@@ -23,10 +23,12 @@ class AllReport(BaseModel):
     title: str = Field(description="A short summary or title of the tool")
     severity: SeverityLevel = Field(description="The severity level of the issue")
     confidence: ConfidenceLevel = Field(description="The confidence level regarding the accuracy of this finding")
-    type: str = Field(default="None", description="For vulnerable MCP tools, specify the CWE identifier (e.g., CWE-35, only the number without the vulnerability name); if the tool has no vulnerability, fill in None")
+    type: str = Field(default="None", description="For vulnerable MCP tools, specify the CWE identifier (e.g., CWE-35, only the CWE-prefixed identifier without the vulnerability name); if the tool has no vulnerability, fill in None")
+    # type: str = Field(default = "Malicious", description="The category or type of the malicious tools")
     tool_name: str = Field(description="The name of the tool in the MCP server. Only one tool name is allowed; multiple tool names or 'All tools' are prohibited.")
     location: AllLocation = Field(description="The location details of the tool within the source code")
     description: str = Field(default="None", description="For vulnerable MCP tools, a detailed technical description of the vulnerability; if the tool has no vulnerability, fill in None")
+    # description: str = Field(description="A detailed technical description of the malicious tools")
 
 class AllResponse(BaseModel):
     """A list of vulnerability reports extracted from the analysis."""

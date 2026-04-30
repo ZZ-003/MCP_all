@@ -160,7 +160,7 @@ def operate_benchmark(bench_dir: str, action: Literal["startup", "cleanup"], max
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Setup or cleanup MCP benchmark servers")
-    parser.add_argument("--bench-dir", type=str, default="/tmp/mcp-benchmark", help="Directory for benchmark setup")
+    parser.add_argument("--bench-dir", type=str, default="/tmp/mcp-benchmark-mali", help="Directory for benchmark setup")
     parser.add_argument("--max-workers", "-t", type=int, default=10, help="Maximum number of worker threads")
     parser.add_argument("action", default="setup", choices=["setup", "startup", "cleanup"], help="Action to perform: setup or cleanup")
     args = parser.parse_args()

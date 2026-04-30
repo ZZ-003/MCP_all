@@ -9,9 +9,9 @@ from semant_guard.workflow import static_scan_benchmark
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Batch scan code repositories with different agents")
-    parser.add_argument("--bench", "-i", default="/tmp/mcp-benchmark", type=str, help="Path to the benchmark directory")
+    parser.add_argument("--bench", "-i", default="/tmp/mcp-benchmark-46", type=str, help="Path to the benchmark directory")
     parser.add_argument("--output", "-o", type=str, help="Path to the output directory")
-    parser.add_argument("--max-concurrent", "-t", type=int, default=3, help="Maximum concurrent scans")
+    parser.add_argument("--max-concurrent", "-t", type=int, default=2, help="Maximum concurrent scans")
     args = parser.parse_args()
 
     output_dir = args.output
@@ -19,3 +19,5 @@ if __name__ == "__main__":
         output_dir = f"./results/rq2/scan_with_intent_capability"
     # batch_code_repo_scan(static_scan_benchmark, args.bench, output_dir, args.max_concurrent)
     asyncio.run(batch_code_repo_scan(static_scan_benchmark, args.bench, output_dir, args.max_concurrent))
+
+    # 784 + 11 = 795 / 800 

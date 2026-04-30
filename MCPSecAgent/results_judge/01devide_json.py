@@ -12,7 +12,7 @@ from judge_agent import run_judge
 def main():
     current_dir = Path(__file__).resolve().parent
     project_root = current_dir.parent  
-    target_path = project_root / "results" / "rq1" / "llm_only" 
+    target_path = project_root / "results" / "rq1" / "semant_guard" 
     ltm_path = project_root / "results" / "ltm"
 
     answer_path = Path("/home/zhong/AllCode/MCP_all/MCPServerBenchmark/output/ground_truth.json")   # 这是 Vuln 的答案

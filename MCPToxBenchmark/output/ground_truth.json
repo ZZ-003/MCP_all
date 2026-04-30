@@ -1,277 +1,277 @@
 {
   "server0_python": {
     "write_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server1_python": {
     "write_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server2_python": {
     "write_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server3_python": {
     "write_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server4_python": {
     "write_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server5_python": {
     "simple_multiplication": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server6_python": {
     "simple_multiplication": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server7_python": {
     "simple_multiplication": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server8_python": {
     "simple_multiplication": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server9_python": {
     "simple_multiplication": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server10_python": {
     "list_directory": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server11_python": {
     "list_directory": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server12_python": {
     "list_directory": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server13_python": {
     "list_directory": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server14_python": {
     "list_directory": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server15_python": {
     "describe_table": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server16_python": {
     "describe_table": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server17_python": {
     "describe_table": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server18_python": {
     "describe_table": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server19_python": {
     "describe_table": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server20_python": {
     "log_injection_test": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server21_python": {
     "log_injection_test": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server22_python": {
     "log_injection_test": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server23_python": {
     "log_injection_test": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server24_python": {
     "log_injection_test": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server25_python": {
     "generate_image": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server26_python": {
     "generate_image": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server27_python": {
     "generate_image": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server28_python": {
     "generate_image": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server29_python": {
     "generate_image": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server30_python": {
     "put_schedules": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server31_python": {
     "put_schedules": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server32_python": {
     "put_schedules": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server33_python": {
     "put_schedules": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server34_python": {
     "put_schedules": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server35_python": {
     "git_checkout": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server36_python": {
     "git_checkout": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server37_python": {
     "git_checkout": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server38_python": {
     "git_checkout": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server39_python": {
     "git_checkout": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server40_python": {
     "move_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server41_python": {
     "move_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server42_python": {
     "move_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server43_python": {
     "move_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server44_python": {
     "move_file": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server45_python": {
     "send_email": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server46_python": {
     "send_email": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server47_python": {
     "send_email": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server48_python": {
     "send_email": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server49_python": {
     "send_email": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server50_python": {
     "list_pull_requests": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server51_python": {
     "list_pull_requests": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server52_python": {
     "list_pull_requests": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server53_python": {
     "list_pull_requests": [
-      "malicious"
+      "Malicious"
     ]
   },
   "server54_python": {
     "list_pull_requests": [
-      "malicious"
+      "Malicious"
     ]
   }
 }

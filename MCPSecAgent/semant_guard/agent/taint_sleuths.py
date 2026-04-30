@@ -25,6 +25,7 @@ class TaintSleuths:
             model=getenv("TAINT_SLEUTHS_MODEL"),
             base_url=getenv("TAINT_SLEUTHS_MODEL_BASE_URL"),
             api_key=getenv("TAINT_SLEUTHS_MODEL_API_KEY"),
+            temperature=0,
         )
         self.agent = create_deep_agent(
             model=self.llm,
@@ -32,7 +33,7 @@ class TaintSleuths:
                 root_dir=project_dir,
                 virtual_mode=True,
             ),
-            middleware=[get_structured_output_middleware(project_dir, AllToolSTM, self.llm)], # 此时 不 是恶意描述 Mali，不是漏洞分析
+            middleware=[get_structured_output_middleware(project_dir, AllToolSTM, self.llm)], # 此时是漏洞分析 Vuln，不是 恶意分析
         )
         self.ltm = ltm
 
@@ -48,7 +49,7 @@ class TaintSleuths:
         ADD_LIMIT = """For each identified tool, I need to examine the discrepancy between its 'intent and capability' across the complete code workflow. A clear distinction must be made between error handling and security validation; the presence of error handling mechanisms does not equate to code security. I should use the STRIDE or CWE taxonomy for systematic security analysis. If any tool is flagged as risky, regardless of the severity level, I need to report it."""        
         response = await self.agent.ainvoke({
             "messages": [
-                HumanMessage(content=INTENT_CAPABILITY_STATIC_ANALYSIS_PROMPT),  # 此时 不 是恶意描述 Mali，是漏洞分析
+                HumanMessage(content=INTENT_CAPABILITY_STATIC_ANALYSIS_PROMPT),  # 此时是漏洞分析 Vuln，不是 恶意分析
                 HumanMessage(content=longterm_memory_to_markdown(self.ltm)),
                 HumanMessage(content=prompt),
                 AIMessage(content=(ACTION_LIMIT + ADD_LIMIT + TASK_INSTRUCTION)),  # 漏洞分析用

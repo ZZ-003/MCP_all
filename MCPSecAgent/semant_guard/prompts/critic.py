@@ -19,7 +19,6 @@ Your primary heuristic for finding vulnerabilities is the discrepancy between **
     *   *Result:* **Vulnerability Found (Path Traversal/Arbitrary File Read).** The code allows reading /etc/passwd even though the intent was restricted to logs.
 
 **Instructions for Execution:**
-
 1.  **Review the Tool Analysis:** Systematically go through the provided "Intent vs. Capability" records. Flag any tool where the implementation seems broader, looser, or more powerful than the described intent.
 2.  **Targeted Code Verification:**
     *   Do *not* blindly trust the summary. When you identify a potential gap, you **MUST** read the actual source code for that specific tool function.
@@ -27,6 +26,7 @@ Your primary heuristic for finding vulnerabilities is the discrepancy between **
 3.  **Analyze MCP Specific Risks and Find the Vulnerability.**
 4.  **Focus on detecting unsafe dynamic code execution and pseudo-sandbox escape risks.**
 5.  **Return Results:** You should use the STRIDE or CWE taxonomy for systematic security analysis. Return the corresponding or most appropriate CWE number for each vulnerability when reporting results.
+    *   If multiple vulnerable tools are identified, you must return the vulnerability information for all relevant tools, regardless of whether the vulnerability types or severity levels are the same, and you must not omit any or return only one of them.
 """.strip()
 
 

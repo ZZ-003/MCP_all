@@ -18,6 +18,7 @@ async def single_agent_scan(project_dir: str) -> dict:
         model=getenv("SINGLE_AGENT_MODEL"),
         base_url=getenv("SINGLE_AGENT_BASE_URL"),
         api_key=getenv("SINGLE_AGENT_API_KEY"),
+        temperature=0,
     )
 
     agent = create_deep_agent(
@@ -27,8 +28,7 @@ async def single_agent_scan(project_dir: str) -> dict:
             virtual_mode=True,
         ),
         middleware=[
-            get_structured_output_middleware(project_dir, AllResponse, llm),
-            # get_structured_output_middleware(project_dir, MaliResponse, llm),  # 此时是恶意描述 Mali
+            get_structured_output_middleware(project_dir, AllResponse, llm),  # 此时是漏洞分析 Vuln，不是 恶意分析
         ],
     )
 

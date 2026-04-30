@@ -37,6 +37,7 @@ async def agent_with_ltm_scan(project_dir: str) -> dict:
         model=getenv("AGENT_WITH_LTM_MODEL"),
         base_url=getenv("AGENT_WITH_LTM_BASE_URL"),
         api_key=getenv("AGENT_WITH_LTM_API_KEY"),
+        temperature=0,
     )
     agent = create_deep_agent(
         model=llm,

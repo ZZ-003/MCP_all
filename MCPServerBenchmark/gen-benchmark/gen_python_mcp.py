@@ -59,7 +59,7 @@ def gen_single_file(output_dir: str):
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True)
     vuln_tool_comb = combinations(VULN_TOOLS.items(), 2)
-    benign_tool_comb = combinations(BENIGN_TOOLS.items(), 4)
+    benign_tool_comb = combinations(BENIGN_TOOLS.items(), 6)
 
     server_id = 0
     vuln_tool_info = {}

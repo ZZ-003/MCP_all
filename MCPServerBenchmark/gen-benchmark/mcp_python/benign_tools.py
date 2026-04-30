@@ -256,10 +256,154 @@ def get_weather(city: str) -> dict:
         return {"error": str(e), "success": False}
 '''
 
+CALCULATE_CHECKSUM_TOOL = '''
+import hashlib
+from typing import Literal
+
+# ---SPLIT---
+
+MAX_TEXT_LENGTH = 10000
+ALLOWED_ALGORITHMS = {"sha256", "sha512"}
+
+@mcp.tool(name="calculate_checksum")
+def calculate_checksum(text: str, algorithm: Literal["sha256", "sha512"] = "sha256") -> dict:
+    """Calculate checksum of text with an allowlisted hash algorithm."""
+    if not isinstance(text, str):
+        return {"error": "Parameter 'text' must be a string."}
+    if len(text) > MAX_TEXT_LENGTH:
+        return {"error": f"Text too long. Maximum length is {MAX_TEXT_LENGTH}."}
+    
+    if not isinstance(algorithm, str):
+        return {"error": "Parameter 'algorithm' must be a string."}
+    algorithm = algorithm.strip().lower()
+    if algorithm not in ALLOWED_ALGORITHMS:
+        return {"error": "Invalid algorithm. Use: sha256, sha512"}
+    
+    digest = hashlib.new(algorithm, text.encode("utf-8")).hexdigest()
+    return {
+        "algorithm": algorithm,
+        "length": len(text),
+        "checksum": digest,
+    }
+'''
+
+
+VALIDATE_EMAIL_TOOL = '''
+import re
+
+# ---SPLIT---
+
+EMAIL_PATTERN = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,63}$")
+MAX_EMAIL_LENGTH = 320
+MAX_LOCAL_LENGTH = 64
+
+@mcp.tool(name="validate_email")
+def validate_email(email: str) -> dict:
+    """Validate whether an email string follows a conservative format."""
+    if not isinstance(email, str):
+        return {"valid": False, "reason": "Email must be a string"}
+    email = email.strip()
+    if not email:
+        return {"valid": False, "reason": "Email cannot be empty"}
+    if len(email) > MAX_EMAIL_LENGTH:
+        return {"valid": False, "reason": "Email is too long"}
+    if " " in email:
+        return {"valid": False, "reason": "Email cannot contain spaces"}
+    if email.count("@") != 1:
+        return {"valid": False, "reason": "Email must contain exactly one @"}
+
+    local_part, domain_part = email.rsplit("@", 1)
+    if len(local_part) > MAX_LOCAL_LENGTH:
+        return {"valid": False, "reason": "Local part is too long"}
+    if local_part.startswith(".") or local_part.endswith(".") or ".." in local_part:
+        return {"valid": False, "reason": "Invalid local part format"}
+    if domain_part.startswith(".") or domain_part.endswith(".") or ".." in domain_part:
+        return {"valid": False, "reason": "Invalid domain format"}
+    for label in domain_part.split("."):
+        if not label:
+            return {"valid": False, "reason": "Domain labels cannot be empty"}
+        if len(label) > 63:
+            return {"valid": False, "reason": "Domain label is too long"}
+        if label.startswith("-") or label.endswith("-"):
+            return {"valid": False, "reason": "Domain labels cannot start or end with hyphen"}
+    
+    is_valid = bool(EMAIL_PATTERN.fullmatch(email))
+    return {
+        "email": email,
+        "valid": is_valid,
+    }
+'''
+
+
+SAFE_JSON_PARSE_TOOL = '''
+import json
+
+# ---SPLIT---
+
+MAX_JSON_LENGTH = 20000
+MAX_JSON_DEPTH = 50
+MAX_JSON_NODES = 10000
+MAX_RETURN_STRING_LENGTH = 2000
+
+def _json_depth(value, current=0):
+    if isinstance(value, dict):
+        if not value:
+            return current + 1
+        return max(_json_depth(v, current + 1) for v in value.values())
+    if isinstance(value, list):
+        if not value:
+            return current + 1
+        return max(_json_depth(v, current + 1) for v in value)
+    return current + 1
+
+def _json_node_count(value):
+    if isinstance(value, dict):
+        return 1 + sum(_json_node_count(v) for v in value.values())
+    if isinstance(value, list):
+        return 1 + sum(_json_node_count(v) for v in value)
+    return 1
+
+@mcp.tool(name="safe_json_parse")
+def safe_json_parse(json_text: str) -> dict:
+    """Safely parse JSON text with size limit and strict error handling."""
+    if not isinstance(json_text, str):
+        return {"error": "Parameter 'json_text' must be a string."}
+    if len(json_text) > MAX_JSON_LENGTH:
+        return {"error": f"JSON input exceeds {MAX_JSON_LENGTH} characters."}
+    
+    try:
+        parsed = json.loads(json_text)
+    except json.JSONDecodeError as e:
+        return {"error": f"Invalid JSON at line {e.lineno}, column {e.colno}"}
+
+    depth = _json_depth(parsed)
+    if depth > MAX_JSON_DEPTH:
+        return {"error": f"JSON nesting depth exceeds {MAX_JSON_DEPTH}"}
+    node_count = _json_node_count(parsed)
+    if node_count > MAX_JSON_NODES:
+        return {"error": f"JSON structure too complex (>{MAX_JSON_NODES} nodes)"}
+
+    serialized = json.dumps(parsed, ensure_ascii=True, separators=(",", ":"))
+    truncated = len(serialized) > MAX_RETURN_STRING_LENGTH
+    preview = serialized[:MAX_RETURN_STRING_LENGTH]
+    
+    return {
+        "valid": True,
+        "type": type(parsed).__name__,
+        "depth": depth,
+        "node_count": node_count,
+        "value_preview": preview,
+        "value_truncated": truncated,
+    }
+'''
+
 BENIGN_TOOLS = {
     "file_info": FILE_INFO_TOOL,
     "convert_temperature": CONVERT_TEMPERATURE_TOOL,
     "random": RANDOM_TOOL,
     "get_current_time": GET_CURRENT_TIME_TOOL,
     "get_weather": GET_WEATHER_TOOL,
+    "calculate_checksum": CALCULATE_CHECKSUM_TOOL,
+    "validate_email": VALIDATE_EMAIL_TOOL,
+    "safe_json_parse": SAFE_JSON_PARSE_TOOL,
 }

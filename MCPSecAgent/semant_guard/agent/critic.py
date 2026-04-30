@@ -24,6 +24,7 @@ class Critic():
             model=getenv("CRITIC_MODEL"),
             base_url=getenv("CRITIC_MODEL_BASE_URL"),
             api_key=getenv("CRITIC_MODEL_API_KEY"),
+            temperature=0,
         )
         self.agent = create_deep_agent(
             model=self.llm,

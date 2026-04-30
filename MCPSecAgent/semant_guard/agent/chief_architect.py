@@ -23,13 +23,8 @@ class ChiefArchitect:
             model=getenv("CHIEF_ARCHITECT_MODEL"),
             base_url=getenv("CHIEF_ARCHITECT_MODEL_BASE_URL"),
             api_key=getenv("CHIEF_ARCHITECT_MODEL_API_KEY"),
+            temperature=0,
         )
-        # llm = ChatQwen(
-        #     model=getenv("CHIEF_ARCHITECT_MODEL"),
-        #     base_url=getenv("CHIEF_ARCHITECT_MODEL_BASE_URL"),
-        #     api_key=getenv("CHIEF_ARCHITECT_MODEL_API_KEY"),
-        #     max_tokens = 4096,
-        # )
         self.agent = create_deep_agent(
             model=llm,
             backend=FilesystemBackend(
@@ -55,7 +50,7 @@ class ChiefArchitect:
                     # HumanMessage(content=ACTION_LIMIT),
                     # HumanMessage(content=TASK_INSTRUCTION),
                     AIMessage(content=ACTION_LIMIT),
-                    AIMessage(content=TASK_INSTRUCTION + "For files with more than 100 lines, I need to use the `read_file` tool multiple times to read the file contents."),
+                    AIMessage(content=TASK_INSTRUCTION + "For files over 100 lines, I use read_file to read them in chunks, and only move on to the next file after finishing the current one to avoid missing information."),
                     # HumanMessage(content=ACTION_GUIDE),
                     
                 ]

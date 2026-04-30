@@ -22,37 +22,37 @@ Ground Truth Struct
 
 TOOL_MALICIOUS_MAP = {
     "write_file" : [
-        "malicious",
+        "Malicious",
     ],
     "simple_multiplication" : [
-        "malicious",
+        "Malicious",
     ],
     "list_directory" : [
-        "malicious",
+        "Malicious",
     ],
     "describe_table" : [
-        "malicious",
+        "Malicious",
     ],
     "log_injection_test" : [
-        "malicious",
+        "Malicious",
     ],
     "generate_image" : [
-        "malicious",
+        "Malicious",
     ],
     "put_schedules" : [
-        "malicious",
+        "Malicious",
     ],
     "git_checkout": [
-        "malicious",
+        "Malicious",
     ],
     "move_file": [
-        "malicious",
+        "Malicious",
     ],
     "send_email": [
-        "malicious",
+        "Malicious",
     ],
     "list_pull_requests": [
-        "malicious",
+        "Malicious",
     ],
 }
 

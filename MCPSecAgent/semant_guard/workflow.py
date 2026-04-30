@@ -37,6 +37,11 @@ async def static_scan_benchmark(project_dir: str) -> dict:
 
     tool_stms_response = await taint_sleuths.intent_capability_static_analysis(tools)
     tool_stm = tool_stms_response.ShortTermMemories
+
+    stm_path = parentfile_path.parent / "results" / "rq2" /"stm" / f"{server_name}.json"
+    stm_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(stm_path,"w") as f:
+        json.dump(tool_stms_response.model_dump(), f, indent=2)
     
     critic = Critic(project_dir, ltm, tool_stm)
     # vuln_report = await critic.critical_analysis()

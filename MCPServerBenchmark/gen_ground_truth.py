@@ -40,6 +40,15 @@ TOOL_VULN_MAP = {
         "CWE-22",
         "CWE-73",
     ],
+    "search_user": [
+        "CWE-89",
+    ],
+    "import_session": [
+        "CWE-502",
+    ],
+    "fetch_metadata": [
+        "CWE-918",
+    ],
 }
 
 
