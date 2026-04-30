@@ -47,11 +47,8 @@ class ChiefArchitect:
             {
                 "messages": [
                     HumanMessage(content=CHIEF_ARCHITECT_PROMPT),
-                    # HumanMessage(content=ACTION_LIMIT),
-                    # HumanMessage(content=TASK_INSTRUCTION),
                     AIMessage(content=ACTION_LIMIT),
                     AIMessage(content=TASK_INSTRUCTION + "For files over 100 lines, I use read_file to read them in chunks, and only move on to the next file after finishing the current one to avoid missing information."),
-                    # HumanMessage(content=ACTION_GUIDE),
                     
                 ]
             }

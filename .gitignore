@@ -12,9 +12,9 @@ Thumbs.db
 .venv
 results/
 venv/
-results/
+results-*/
 *.json
 output_python/
-mcp-scanner/
-MCPScan/
+vuln_log_and_json/
+
 mcp-scanner/

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict
 
-# 四个实验目录
+# Four experiment directories
 EXPERIMENT_DIRS = [
     "llm_only",
     "single_agent",
@@ -10,7 +10,7 @@ EXPERIMENT_DIRS = [
     "scan_with_intent_capability",
 ]
 
-# 需要统计的字段
+# Fields to be counted
 STATS_FIELDS = [
     "True_Positive",
     "False_Positive",
@@ -21,13 +21,13 @@ STATS_FIELDS = [
 
 
 def calculate_statistics_for_dir(results_dir: Path) -> Dict:
-    """统计单个目录下所有文件的工具数量"""
+    """Count tool occurrences across all files in a single directory."""
     json_files = list(results_dir.glob("*.json"))
     
-    # 用于存储每个字段的工具数量
+    # Store tool counts for each field
     stats = {field: 0 for field in STATS_FIELDS}
     files_processed = 0
-    # 记录每个文件的 FP 和 FN 数量
+    # Track FP and FN counts per file
     fp_fn_files = []
     
     for file_path in json_files:
@@ -38,7 +38,7 @@ def calculate_statistics_for_dir(results_dir: Path) -> Dict:
             fp_count = len(data.get("False_Positive", []))
             fn_count = len(data.get("False_Negative", []))
             
-            # 记录 FP>0 或 FN>0 的文件
+            # Record files where FP>0 or FN>0
             if fp_count > 0 or fn_count > 0:
                 fp_fn_files.append({
                     "file_path": str(file_path.name),
@@ -64,19 +64,19 @@ def calculate_statistics_for_dir(results_dir: Path) -> Dict:
 
 
 def print_directory_stats(data: Dict):
-    """打印单个目录的统计结果"""
+    """Print statistics for a single directory."""
     print(f"\n{'='*60}")
-    print(f"实验目录：{data['dir_name']}")
+    print(f"Experiment directory: {data['dir_name']}")
     print(f"{'='*60}")
-    print(f"处理文件数：{data['files_processed']}")
+    print(f"Files processed: {data['files_processed']}")
     for field, count in data['stats'].items():
         print(f"{field}: {count}")
     
-    # 打印 FP>0 或 FN>0 的文件
+    # Print files where FP>0 or FN>0
     if data.get("fp_fn_files"):
-        print(f"\n--- FP>0 或 FN>0 的文件 ---")
+        print("\n--- Files with FP>0 or FN>0 ---")
         for file_info in data["fp_fn_files"]:
-            print(f"  文件：{file_info['file_path']}")
+            print(f"  File: {file_info['file_path']}")
             print(f"    False_Positive: {file_info['False_Positive']}")
             print(f"    False_Negative: {file_info['False_Negative']}")
 
@@ -86,37 +86,37 @@ def calculate_statistics():
     
     all_results = []
     
-    # 总体统计
+    # Overall summary
     overall_stats = {field: 0 for field in STATS_FIELDS}
     overall_files = 0
     
     for exp_dir in EXPERIMENT_DIRS:
         results_dir = current_dir / exp_dir
         if not results_dir.exists():
-            print(f"\n[警告] 目录不存在：{results_dir}")
+            print(f"\n[Warning] Directory does not exist: {results_dir}")
             continue
         
         dir_data = calculate_statistics_for_dir(results_dir)
         all_results.append(dir_data)
         print_directory_stats(dir_data)
         
-        # 累加到总体统计
+        # Add to overall summary
         overall_files += dir_data['files_processed']
         for field in STATS_FIELDS:
             overall_stats[field] += dir_data['stats'][field]
     
-    # 打印汇总统计
+    # Print summary
     if all_results:
         print(f"\n{'='*60}")
-        print("汇总统计 (所有实验)")
+        print("Summary statistics (all experiments)")
         print(f"{'='*60}")
-        print(f"实验目录数：{len(all_results)}")
-        print(f"总处理文件数：{overall_files}")
+        print(f"Number of experiment directories: {len(all_results)}")
+        print(f"Total files processed: {overall_files}")
         print()
         for field, count in overall_stats.items():
             print(f"{field}: {count}")
         
-        # 保存结果到 JSON 文件
+        # Save results to a JSON file
         output_data = {
             "summary": {
                 "total_experiments": len(all_results),
@@ -126,11 +126,11 @@ def calculate_statistics():
             "overall": overall_stats,
         }
         
-        # 保存结果
+        # Write output
         output_path = current_dir / "tool_statistics_result.json"
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, indent=2, ensure_ascii=False)
-        print(f"\n结果已保存到：{output_path}")
+        print(f"\nResults saved to: {output_path}")
 
 
 if __name__ == "__main__":

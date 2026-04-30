@@ -26,25 +26,20 @@ async def llm_only_scan(project_dir: str) -> dict:
     agent = create_agent(
         model=llm,
         tools=[],
-        response_format=ToolStrategy(AllResponse)  # 此时是漏洞分析 Vuln，不是 恶意分析
+        response_format=ToolStrategy(AllResponse) 
     )
 
-    # 需要跳过的目录和文件
     skip_dirs = {'.git', '__pycache__', 'node_modules', '.venv'}
     skip_files = {
         "startup.sh", "shutdown.sh", "docker-compose.yml", "pyproject.toml"
         ".gitignore", "uv.lock", ".dockerignore", ".DS_Store","RAEDME.md"
     }
         
-    # 收集所有代码文件内容
     all_files_content = []
     file_count = 0
     
     for dirpath, dirnames, filenames in walk(project_path):
-        # 过滤要跳过的目录，避免递归进入
         dirnames[:] = [d for d in dirnames if d not in skip_dirs]
-        
-        # print(project_path)
         if dirpath.split('/')[-1] in skip_dirs:
             continue
         
@@ -54,23 +49,18 @@ async def llm_only_scan(project_dir: str) -> dict:
             file_path = Path(dirpath) / filename
             
             try:
-                # 读取文件内容
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
                     relative_path = file_path.relative_to(project_path)
-                    # print(relative_path)
                     all_files_content.append(f"=== File: {relative_path} ===\n{content}\n")
                     file_count += 1
             except Exception as e:
-                # 跳过无法读取的文件
                 print(f"Warning: Could not read {file_path}: {e}")
                 continue
     
-    # 构建LLM prompt
     files_text = "\n\n".join(all_files_content)
 
-    prompt = All_CODE_SCAN_PROMPT      # 此时是漏洞分析 Vuln
-    # prompt = MALICIOUS_TOOL_PROMPT   # 此时是恶意描述 Mali
+    prompt = All_CODE_SCAN_PROMPT    
 
     prompt += f"## Codebase ({file_count} files):\n"
     prompt += files_text

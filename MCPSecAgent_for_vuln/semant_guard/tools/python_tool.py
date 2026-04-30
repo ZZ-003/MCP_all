@@ -26,7 +26,6 @@ def execute_python_code(project_dir: str, code: str) -> dict:
                 sys.path.insert(0, project_dir)
                 exec(code, {})
             finally:
-                # 恢复环境
                 os.chdir(old_cwd)
                 sys.path = old_sys_path
         

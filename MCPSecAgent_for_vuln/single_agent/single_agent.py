@@ -28,12 +28,11 @@ async def single_agent_scan(project_dir: str) -> dict:
             virtual_mode=True,
         ),
         middleware=[
-            get_structured_output_middleware(project_dir, AllResponse, llm),  # 此时是漏洞分析 Vuln，不是 恶意分析
+            get_structured_output_middleware(project_dir, AllResponse, llm), 
         ],
     )
 
-    prompt = All_CODE_SCAN_PROMPT   # 此时是漏洞扫描的 prompt
-    # prompt = MALICIOUS_TOOL_PROMPT    # 此时是恶意描述 Mali
+    prompt = All_CODE_SCAN_PROMPT  
     response = await agent.ainvoke({"messages": [{"role": "user", "content": prompt}]})
 
     log_dir = setup_log_dir(project_dir, "single_agent")

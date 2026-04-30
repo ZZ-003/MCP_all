@@ -15,17 +15,6 @@ from prompt import PROMPT
 
 class ANSWER(BaseModel):
     True_Positive_Num: int = Field(description="The number of vulnerable tools correctly identified as vulnerable.")
-    # False_Positive_Num: int = Field(description="The number of clean tools incorrectly identified as vulnerable.")
-    # False_Negative_Num: int = Field(description="The number of vulnerable tools incorrectly identified as secure.")
-    # Correctly_identified_tools_Num: int = Field(description="The number of code correctly identified as tools.")
-    # Incorrectly_identified_tools_Num: int = Field(description="The number of code incorrectly identified as tools.")
-
-# class ANSWER(BaseModel):
-#     True_Positive: list[str] = Field(description="The sum of vulnerable tools correctly identified as vulnerable.")
-#     False_Positive: list[str] = Field(description="The sum of clean tools incorrectly identified as vulnerable.")
-#     False_Negative: list[str] = Field(description="The sum of vulnerable tools incorrectly identified as secure.")
-#     Correctly_identified_tools: list[str] = Field(description="The sum of code correctly identified as tools.")
-#     Incorrectly_identified_tools: list[str] = Field(description="The sum of code incorrectly identified as tools.")
 
 
 class JudgeAgent:
@@ -37,10 +26,7 @@ class JudgeAgent:
 
         self.agent = create_deep_agent(
             model=ChatOpenAI(
-
             ),
-            # model = llm,
-            # backend=FilesystemBackend(root_dir=project_dir),
             response_format=ToolStrategy(ANSWER),
         )
 
@@ -100,20 +86,8 @@ async def run_judge(target_dir , answer_dir, all_tool_path):
     except AttributeError:
         result_data = result.dict()
 
-       
-    # output_path = Path(__file__).resolve().parent / Path(target_dir).parent.name / Path(target_dir).name
-    
-    # output_path.parent.mkdir(parents=True, exist_ok=True)
-    # with open(output_path, "w", encoding="utf-8") as f:
-    #     json.dump(result_data, f, indent=4, ensure_ascii=False)
 
-    # 简略版，此时只做语义判断 TN
     TN_num = result_data["True_Positive_Num"]
-    
-    # 修复：直接从 target_dir 提取实验目录名（倒数第二个目录名）
-    # target_path = Path(target_dir)
-    # experiment_dir =  # 获取 "scan_with_intent_capability"
-    # server_name = target_path.stem  # 获取 "server0_python"
     output_path = Path(__file__).resolve().parent / Path(target_dir).parent.name / Path(target_dir).stem  / "result.json"
 
     print(output_path)
@@ -124,11 +98,3 @@ async def run_judge(target_dir , answer_dir, all_tool_path):
     with open(output_path, 'w', encoding='utf-8') as f:
         content["True_Positive_Num"] = TN_num
         json.dump(content, f, indent=4, ensure_ascii=False)
-
-
-if __name__ == "__main__":
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent.parent
-    target_dir = project_root / "results" / "rq1" / "llm_only" / "server0_python.json"
-    answer_dir = "/home/ubuntu/mcp-sec/MCPServerBenchmark/output/ground_truth.json"
-    asyncio.run(run_judge(str(target_dir),answer_dir))
