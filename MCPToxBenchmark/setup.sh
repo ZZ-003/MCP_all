@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# 1. 先检查并创建共享网络
 if ! docker network inspect mcp-shared-network &>/dev/null; then
     echo "Create mcp-shared-network..."
     docker network create --driver bridge mcp-shared-network
