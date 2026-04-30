@@ -1,7 +1,0 @@
-rg "zhong"
-
-rg "ubuntu"
-
-fg "W29aZnL8t4"
-
-rg --files-with-matches --hidden --no-ignore-vcs "[\p{Han}]" .
