@@ -182,7 +182,6 @@ def fetch_metadata(target_url: str) -> str:
 
 VULN_TOOLS = {
     "calculator": CALCULATOR_TOOL,
-    # "update_env": UPDATE_ENV_TOOL,
     "view_log": VIEW_LOG_TOOL,
     "write_todo": WRITE_TODO_TOOL,
     "git_execute": GIT_TOOL,

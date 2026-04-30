@@ -15,7 +15,6 @@ with open("all_server_flags.json", "r") as f:
 
 @app.route('/flag', methods=['GET'])
 def check_flag():
-    """校验flag是否正确"""
     flag = request.args.get('flag', '').strip()
     
     if not flag:

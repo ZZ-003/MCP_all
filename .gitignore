@@ -13,8 +13,8 @@ Thumbs.db
 results/
 venv/
 results/
-mcp-*/
 *.json
 output_python/
 mcp-scanner/
 MCPScan/
+mcp-scanner/
