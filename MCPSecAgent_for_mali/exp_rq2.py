@@ -9,7 +9,7 @@ from semant_guard.workflow import static_scan_benchmark
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Batch scan code repositories with different agents")
-    parser.add_argument("--bench", "-i", default="/tmp/mcp-benchmark-mali-8", type=str, help="Path to the benchmark directory")
+    parser.add_argument("--bench", "-i", default="/tmp/mcp-benchmark-mali", type=str, help="Path to the benchmark directory")
     parser.add_argument("--output", "-o", type=str, help="Path to the output directory")
     parser.add_argument("--max-concurrent", "-t", type=int, default=1, help="Maximum concurrent scans")
     args = parser.parse_args()

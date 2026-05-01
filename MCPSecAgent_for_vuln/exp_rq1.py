@@ -17,7 +17,7 @@ METHOD_MAP = {
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Batch scan code repositories with different agents")
-    parser.add_argument("--bench", "-i", default="/tmp/mcp-benchmark-46", type=str, help="Path to the benchmark directory")
+    parser.add_argument("--bench", "-i", default="/tmp/mcp-benchmark", type=str, help="Path to the benchmark directory")
     parser.add_argument("--output", "-o", type=str, help="Path to the output directory")
     parser.add_argument("--method", "-m", type=str, choices=["llm_only", "single_agent", "semant_guard"], default="semant_guard", help="Type of agent to use for scanning")
     parser.add_argument("--max-concurrent", "-t", type=int, default=1, help="Maximum concurrent scans")
